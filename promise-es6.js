@@ -29,20 +29,19 @@ pfailure.catch(reason => console.log('2b - failure, reason=', reason)); // 2b - 
 pfailure.then(value => console.log('2c - success, value=', value)).catch(reason => console.log('2d - failure, reason=', reason)); // 2d - failure, reason= KO
 
 /**
- * Note sur le chainage
+ * Note sur le chainage "simple" : p -> then -> catch
  */
-// En cas de chainage p -> then -> catch : le catch récupère la première erreur (promise failed => on passe direct au catch, on ne passe pas par le then)
+//le catch recupere la premiere erreur (promise failed => on passe direct au catch, on ne passe pas par le then)
 psuccess.then(value => { console.log('3a'); throw 'error'; }) // 3a
 .catch(reason => console.log('3a - failure, reason=', reason)); // 3a - failure, reason= error
 
 pfailure.then(value => { console.log('3b'); throw 'error'; }) // nothing (on passe direcr dans le catch)
 .catch(reason => console.log('3b - failure, reason=', reason)); // 3b - failure, reason= KO
 
-
 /**
  * Note sur le double catch
  */
-// Le deuxième catch n'est appelé que si le premier relance une erreur
+// Le deuxieme catch n'est appele que si le premier relance une erreur
 psuccess.then(value => { console.log('4a'); throw 'error4a'; }) // 4a
 .catch(reason => { console.log('4b,', reason); throw 'error4b';}) // 4b, error4a
 .catch(reason => { console.log('4c,', reason); }); // 4c, error4b
@@ -51,6 +50,19 @@ psuccess.then(value => { console.log('5a'); throw 'error5a'; }) // 5 a
 .catch(reason => { console.log('5b,', reason); }) // 5b, error5a
 .catch(reason => { console.log('5c,', reason); }); // nothing
 
+/**
+ * Note sur le chainage de plusieurs then : des la premiere erreur, on passe au premier catch
+ */
+ psuccess.then(value => { console.log('6a'); throw 'error6a'; }) // 6a
+.then(value => { console.log('6b'); throw 'error6b'; }) // nothing
+.then(value => { console.log('6c'); throw 'error6c'; }) // nothing
+.catch(reason => { console.log('6d,', reason); }) // 6d, error6a
+.catch(reason => { console.log('6e,', reason); }); //nothing
+
+ psuccess.then(value => { console.log('7a'); }) // 7a
+.then(value => { console.log('7b'); throw 'error7b'; }) // 7b
+.then(value => { console.log('7c'); throw 'error7c'; }) // nothing
+.catch(reason => { console.log('7d,', reason); }); // 7d, error7b
 
 /*
  * Notes diverses
