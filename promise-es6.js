@@ -1,4 +1,5 @@
 'use strict';
+console.log(process.versions);
 
 let psuccess = new Promise((resolve, reject) => {
   resolve('OK');
